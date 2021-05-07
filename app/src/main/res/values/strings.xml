@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">AisleTestApp</string>
+    <string name="get_otp">Get OTP</string>
+    <string name="enter_your_phone_number">Enter Your \nPhone Number</string>
+    <string name="_91">+91</string>
+    <string name="continue_forward">Continue</string>
 </resources>
