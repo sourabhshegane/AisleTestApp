@@ -16,6 +16,7 @@ import dev.sourabh.aisle.android.data.model.OTPRequest
 import dev.sourabh.aisle.android.databinding.ActivityMainBinding
 import dev.sourabh.aisle.android.ui.base.ViewModelFactory
 import dev.sourabh.aisle.android.ui.main.viewmodel.MainViewModel
+import dev.sourabh.aisle.android.utils.Constants
 import dev.sourabh.aisle.android.utils.Status
 
 class MainActivity : AppCompatActivity() {
@@ -29,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         setUpViewModel()
         initUI()
+        //navigateToOTPVerificationActivity("8329855960");
     }
 
     private fun setUpViewModel() {
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                             it?.let {
                                 val otpRequestStatus = it.status
                                 if(otpRequestStatus){
-                                    navigateToOTPVerificationActivity()
+                                    navigateToOTPVerificationActivity(enteredPhoneNumber)
                                 }else{
                                     Toast.makeText(this, getString(R.string.something_went_wrong_please_try_again), Toast.LENGTH_SHORT).show()
                                 }
@@ -86,8 +88,9 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun navigateToOTPVerificationActivity(){
+    private fun navigateToOTPVerificationActivity(userPhoneNumber: String){
         val intentToOTPVerificationActivity = Intent(this, OTPVerificationActivity::class.java)
+        intentToOTPVerificationActivity.putExtra(Constants.INTENT_KEY_USER_PHONE_NUMBER, userPhoneNumber)
         startActivity(intentToOTPVerificationActivity)
         finish()
     }

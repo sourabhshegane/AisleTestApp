@@ -2,90 +2,71 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+        <data>
+            <variable
+                name="phoneNumber"
+                type="java.lang.String" />
+        </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.main.view.MainActivity">
+        tools:context=".ui.main.view.OTPVerificationActivity">
 
         <TextView
             android:id="@+id/tv_phone_number"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
             android:fontFamily="@font/inter_semi_bold"
-            android:text="@string/get_otp"
+            android:text="@{`+91 `+ phoneNumber}"
+            android:drawablePadding="8dp"
+            android:gravity="center"
             android:textColor="@color/black"
             android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline2" />
+            app:layout_constraintTop_toTopOf="@+id/guideline2"
+            app:drawableRightCompat="@drawable/ic_edit"
+            app:drawableTint="@color/black" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="24dp"
             android:fontFamily="@font/inter_black"
-            android:text="@string/enter_your_phone_number"
+            android:text="@string/enter_the_otp"
             android:textColor="@color/black"
             android:textSize="30sp"
-            app:layout_constraintEnd_toEndOf="@+id/tv_phone_number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tv_phone_number"
             app:layout_constraintTop_toBottomOf="@+id/tv_phone_number" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_user_phone_prefix"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:focusable="false"
-            app:boxStrokeColor="@color/color_grey"
-            app:boxCornerRadiusBottomEnd="@dimen/text_fields_radius"
-            app:boxCornerRadiusBottomStart="@dimen/text_fields_radius"
-            app:boxCornerRadiusTopEnd="@dimen/text_fields_radius"
-            app:boxCornerRadiusTopStart="@dimen/text_fields_radius"
-            app:layout_constraintStart_toStartOf="@+id/textView2"
-            app:layout_constraintTop_toBottomOf="@+id/textView2">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/inter_bold"
-                android:gravity="center"
-                android:padding="@dimen/text_fields_padding"
-                android:text="@string/_91"
-                android:focusable="false"
-                android:textSize="18sp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tf_user_phone_number"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             app:boxCornerRadiusBottomEnd="@dimen/text_fields_radius"
             app:boxCornerRadiusBottomStart="@dimen/text_fields_radius"
             app:boxCornerRadiusTopEnd="@dimen/text_fields_radius"
             app:boxCornerRadiusTopStart="@dimen/text_fields_radius"
             app:boxStrokeColor="@color/color_grey"
-            app:layout_constraintStart_toEndOf="@+id/tf_user_phone_prefix"
+            app:layout_constraintStart_toStartOf="@+id/textView2"
             app:layout_constraintTop_toBottomOf="@+id/textView2">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ed_user_phone_number"
+                android:id="@+id/ed_entered_otp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:ems="7"
                 android:fontFamily="@font/inter_bold"
                 android:gravity="center"
-                android:ems="7"
                 android:inputType="phone"
                 android:padding="@dimen/text_fields_padding"
                 android:textSize="18sp" />
@@ -101,10 +82,10 @@
             app:layout_constraintGuide_percent="0.1"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_continue_to_otp"
+            android:id="@+id/btn_validate_otp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:backgroundTint="@color/dark_yellow"
             android:fontFamily="@font/inter_bold"
             android:letterSpacing="0"
@@ -116,19 +97,32 @@
             android:textAllCaps="false"
             android:textSize="18sp"
             app:cornerRadius="24dp"
-            app:layout_constraintStart_toStartOf="@+id/tf_user_phone_prefix"
-            app:layout_constraintTop_toBottomOf="@+id/tf_user_phone_prefix" />
+            app:layout_constraintStart_toStartOf="@+id/tf_user_phone_number"
+            app:layout_constraintTop_toBottomOf="@+id/tf_user_phone_number" />
 
         <ProgressBar
-            android:id="@+id/pb_main_activity"
+            android:id="@+id/pb_otp_verification_activity"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:visibility="gone"
             android:indeterminateTint="@color/dark_yellow"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_continue_to_otp"
-            app:layout_constraintStart_toEndOf="@+id/btn_continue_to_otp"
-            app:layout_constraintTop_toTopOf="@+id/btn_continue_to_otp" />
+            app:layout_constraintBottom_toBottomOf="@+id/btn_validate_otp"
+            app:layout_constraintStart_toEndOf="@+id/btn_validate_otp"
+            app:layout_constraintTop_toTopOf="@+id/btn_validate_otp" />
+
+        <TextView
+            android:id="@+id/tv_otp_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="00:59"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_validate_otp"
+            app:layout_constraintStart_toEndOf="@+id/btn_validate_otp"
+            app:layout_constraintTop_toTopOf="@+id/btn_validate_otp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

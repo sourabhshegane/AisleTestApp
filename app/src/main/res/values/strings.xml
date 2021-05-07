@@ -6,4 +6,7 @@
     <string name="continue_forward">Continue</string>
     <string name="enter_valid_phone_number">Please enter a valid Phone Number</string>
     <string name="something_went_wrong_please_try_again">Something went wrong. Please try again</string>
+    <string name="enter_the_otp">Enter The \nOTP</string>
+    <string name="resent_otp">Resend OTP</string>
+    <string name="wrong_otp_entered">You have entered the wrong OTP. Please try again</string>
 </resources>
