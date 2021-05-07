@@ -9,4 +9,5 @@
     <string name="enter_the_otp">Enter The \nOTP</string>
     <string name="resent_otp">Resend OTP</string>
     <string name="wrong_otp_entered">You have entered the wrong OTP. Please try again</string>
+    <string name="otp_re_sent">OTP Resent</string>
 </resources>

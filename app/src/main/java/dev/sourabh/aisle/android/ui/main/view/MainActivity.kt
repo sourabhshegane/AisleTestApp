@@ -52,6 +52,12 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.enter_valid_phone_number), Toast.LENGTH_SHORT).show()
             }
         }
+
+        //If user has chose to edit his/her phone number and returned back from OTPVerification screen.
+        if(intent.hasExtra(Constants.INTENT_KEY_USER_PHONE_NUMBER)){
+            val userPhoneNumber = intent.getStringExtra(Constants.INTENT_KEY_USER_PHONE_NUMBER)
+            activityMainBinding.edUserPhoneNumber.setText(userPhoneNumber.toString())
+        }
     }
 
     private fun sendOTP(enteredPhoneNumber: String) {

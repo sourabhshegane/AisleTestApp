@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import dev.sourabh.aisle.android.R
 import dev.sourabh.aisle.android.data.api.ApiHelper
 import dev.sourabh.aisle.android.data.api.RetrofitBuilder
+import dev.sourabh.aisle.android.data.model.OTPRequest
 import dev.sourabh.aisle.android.data.model.OTPValidationRequest
 import dev.sourabh.aisle.android.databinding.ActivityOtpVerificationBinding
 import dev.sourabh.aisle.android.ui.base.ViewModelFactory
@@ -22,6 +23,7 @@ import dev.sourabh.aisle.android.utils.Status
 
 class OTPVerificationActivity : AppCompatActivity() {
 
+    private lateinit var timer: CountDownTimer
     private lateinit var userPhoneNumber: String
     private lateinit var activityOtpVerificationBinding: ActivityOtpVerificationBinding;
     private lateinit var otpVerificationViewModel: OTPVerificationViewModel
@@ -55,6 +57,7 @@ class OTPVerificationActivity : AppCompatActivity() {
         activityOtpVerificationBinding.tvOtpTimer.setOnClickListener {
             val otpTimerText = activityOtpVerificationBinding.tvOtpTimer.text.toString()
             if(otpTimerText == getString(R.string.resent_otp)){
+                activityOtpVerificationBinding.tvOtpTimer.visibility = View.GONE
                 resendOTP()
             }
         }
@@ -63,10 +66,18 @@ class OTPVerificationActivity : AppCompatActivity() {
             val enteredOTP = activityOtpVerificationBinding.edEnteredOtp.text.toString();
 
             if(isValidOTPByLength(enteredOTP)){
+                activityOtpVerificationBinding.tvOtpTimer.visibility = View.INVISIBLE
                 validateOTPFromServer(enteredOTP, userPhoneNumber)
             }else{
                 Toast.makeText(this, "Please enter an valid OTP", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        activityOtpVerificationBinding.tvPhoneNumber.setOnClickListener {
+            val intentToMainActivity = Intent(this, MainActivity::class.java)
+            intentToMainActivity.putExtra(Constants.INTENT_KEY_USER_PHONE_NUMBER, userPhoneNumber)
+            startActivity(intentToMainActivity)
+            finish()
         }
     }
 
@@ -82,7 +93,7 @@ class OTPVerificationActivity : AppCompatActivity() {
                         activityOtpVerificationBinding.pbOtpVerificationActivity.visibility = View.VISIBLE
                     }
                     Status.SUCCESS -> {
-                        activityOtpVerificationBinding.pbOtpVerificationActivity.visibility = View.GONE
+                        activityOtpVerificationBinding.pbOtpVerificationActivity.visibility = View.INVISIBLE
                         resource.data?.let {
                             it?.let {
                                 val receivedToken = it.token
@@ -92,14 +103,19 @@ class OTPVerificationActivity : AppCompatActivity() {
                                         getString(R.string.wrong_otp_entered),
                                         Toast.LENGTH_LONG
                                     ).show()
+                                    activityOtpVerificationBinding.tvOtpTimer.visibility = View.VISIBLE
                                 }else{
-                                    navigateToHomeScreen();
+
+                                    if(this::timer.isInitialized)
+                                            timer?.cancel()
+
+                                    navigateToHomeScreen()
                                 }
                             }
                         }
                     }
                     Status.ERROR -> {
-                        Log.d("XXX", "validateOTPFromServer: " + resource.data)
+                        activityOtpVerificationBinding.tvOtpTimer.visibility = View.VISIBLE
                         activityOtpVerificationBinding.pbOtpVerificationActivity.visibility = View.GONE
                         Toast.makeText(this, getString(R.string.something_went_wrong_please_try_again), Toast.LENGTH_SHORT).show()
                     }
@@ -123,10 +139,44 @@ class OTPVerificationActivity : AppCompatActivity() {
 
     private fun resendOTP() {
 
+        val userPhoneNumberWithCountryCode = getUserPhoneNumberWithCountryCode(userPhoneNumber);
+        val otpRequest = OTPRequest(userPhoneNumberWithCountryCode)
+        otpVerificationViewModel.requestOTP(otpRequest).observe(this, {
+            it?.let { resource ->
+                when(resource.status){
+
+                    Status.LOADING-> {
+                        activityOtpVerificationBinding.pbOtpVerificationActivity.visibility = View.VISIBLE
+                    }
+
+                    Status.SUCCESS -> {
+                        activityOtpVerificationBinding.pbOtpVerificationActivity.visibility = View.GONE
+                        resource.data?.let {
+                            it?.let {
+                                val otpRequestStatus = it.status
+                                if(otpRequestStatus){
+                                    Toast.makeText(this, getString(R.string.otp_re_sent), Toast.LENGTH_SHORT).show()
+                                    startCountDownTimer()
+                                }else{
+                                    Toast.makeText(this, getString(R.string.something_went_wrong_please_try_again), Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }
+
+                    Status.ERROR -> {
+                        activityOtpVerificationBinding.pbOtpVerificationActivity.visibility = View.GONE
+                        Toast.makeText(this, getString(R.string.something_went_wrong_please_try_again), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        })
     }
 
     private fun startCountDownTimer() {
-        val timer = object: CountDownTimer(20000, 1000) {
+        activityOtpVerificationBinding.tvOtpTimer.visibility = View.VISIBLE
+
+        timer = object: CountDownTimer(20000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val toSeconds = (millisUntilFinished/1000)
                 if(toSeconds < 10)
